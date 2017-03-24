@@ -11,7 +11,6 @@ var (
 	arbitraryNumber   = 555
 	veryComplexObject = fancyObject{
 		User:        613,
-		Test:        customMarshaler(1),
 		ContentID:   "監獄学園",
 		Page:        1,
 		SkipThis:    "i should disappear",
@@ -110,15 +109,14 @@ type simpleObject struct {
 }
 
 type fancyObject struct {
-	User      int `dynamo:"UserID"`
-	Test      customMarshaler
+	User      int `dynamodbav:"UserID"`
 	ContentID string
 	Page      int
-	SkipThis  string `dynamo:"-"`
-	Bonus     *int   `dynamo:",omitempty"`
+	SkipThis  string `dynamodbav:"-"`
+	Bonus     *int   `dynamodbav:",omitempty"`
 
 	TestText  toki.Time
-	SkipMePlz time.Time `dynamo:",omitempty"`
+	SkipMePlz time.Time `dynamodbav:",omitempty"`
 
 	StringSlice []string
 
@@ -141,7 +139,7 @@ type other struct {
 
 type SuperComplex []struct {
 	HelpMe struct {
-		FFF []int `dynamo:",set"`
+		FFF []int `dynamodbav:",numberset"`
 	}
 }
 
