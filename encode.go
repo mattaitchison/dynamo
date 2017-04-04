@@ -21,6 +21,9 @@ func MarshalItem(v interface{}) (map[string]*dynamodb.AttributeValue, error) {
 }
 
 func marshalItem(v interface{}) (map[string]*dynamodb.AttributeValue, error) {
+	if v, ok := v.(map[string]*dynamodb.AttributeValue); ok {
+		return v, nil
+	}
 	return dynamodbattribute.MarshalMap(v)
 }
 
