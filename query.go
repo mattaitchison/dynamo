@@ -92,7 +92,7 @@ func (table Table) Get(name string, value interface{}) *Query {
 		table:   table,
 		hashKey: name,
 	}
-	q.hashValue, q.err = marshal(value, "")
+	q.hashValue, q.err = marshal(value)
 	return q
 }
 

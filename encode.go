@@ -26,10 +26,13 @@ func marshalItem(v interface{}) (map[string]*dynamodb.AttributeValue, error) {
 
 // Marshal converts the given value into a DynamoDB attribute value.
 func Marshal(v interface{}) (*dynamodb.AttributeValue, error) {
-	return marshal(v, "")
+	return marshal(v)
 }
 
-func marshal(v interface{}, special string) (*dynamodb.AttributeValue, error) {
+func marshal(v interface{}) (*dynamodb.AttributeValue, error) {
+	if v, ok := v.(*dynamodb.AttributeValue); ok {
+		return v, nil
+	}
 	return dynamodbattribute.Marshal(v)
 }
 

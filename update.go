@@ -43,7 +43,7 @@ func (table Table) Update(hashKey string, value interface{}) *Update {
 		del:    make(map[string]string),
 		remove: make(map[string]struct{}),
 	}
-	u.hashValue, u.err = marshal(value, "")
+	u.hashValue, u.err = marshal(value)
 	return u
 }
 
@@ -51,7 +51,7 @@ func (table Table) Update(hashKey string, value interface{}) *Update {
 func (u *Update) Range(name string, value interface{}) *Update {
 	var err error
 	u.rangeKey = name
-	u.rangeValue, err = marshal(value, "")
+	u.rangeValue, err = marshal(value)
 	u.setError(err)
 	return u
 }
@@ -126,7 +126,7 @@ func (u *Update) AddFloatsToSet(path string, values ...float64) *Update {
 	return u.Add(path, values)
 }
 
-func (u *Update) delete(path string, value interface{}) *Update {
+func (u *Update) Delete(path string, value interface{}) *Update {
 	path, err := u.escape(path)
 	u.setError(err)
 	vsub, err := u.subValue(value, "set")
@@ -137,17 +137,17 @@ func (u *Update) delete(path string, value interface{}) *Update {
 
 // DeleteStringsFromSet deletes the given values from the string set specified by path.
 func (u *Update) DeleteStringsFromSet(path string, values ...string) *Update {
-	return u.delete(path, values)
+	return u.Delete(path, values)
 }
 
 // DeleteIntsFromSet deletes the given values from the number set specified by path.
 func (u *Update) DeleteIntsFromSet(path string, values ...int) *Update {
-	return u.delete(path, values)
+	return u.Delete(path, values)
 }
 
 // DeleteFloatsFromSet deletes the given values from the number set specified by path.
 func (u *Update) DeleteFloatsFromSet(path string, values ...float64) *Update {
-	return u.delete(path, values)
+	return u.Delete(path, values)
 }
 
 // Remove removes the paths from this item, deleting the specified attributes.
@@ -173,14 +173,14 @@ func (u *Update) If(expr string, args ...interface{}) *Update {
 
 // Run executes this update.
 func (u *Update) Run() error {
-	u.returnType = "NONE"
+	u.returnType = dynamodb.ReturnValueNone
 	_, err := u.run()
 	return err
 }
 
 // Value executes this update, encoding out with the new value.
 func (u *Update) Value(out interface{}) error {
-	u.returnType = "ALL_NEW"
+	u.returnType = dynamodb.ReturnValueAllNew
 	output, err := u.run()
 	if err != nil {
 		return err
@@ -190,7 +190,7 @@ func (u *Update) Value(out interface{}) error {
 
 // OldValue executes this update, encoding out with the previous value.
 func (u *Update) OldValue(out interface{}) error {
-	u.returnType = "ALL_OLD"
+	u.returnType = dynamodb.ReturnValueAllOld
 	output, err := u.run()
 	if err != nil {
 		return err

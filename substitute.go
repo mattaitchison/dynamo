@@ -28,13 +28,13 @@ func (s *subber) subName(name string) string {
 	return sub
 }
 
-func (s *subber) subValue(value interface{}, special string) (string, error) {
+func (s *subber) subValue(value interface{}, _ string) (string, error) {
 	if s.valueExpr == nil {
 		s.valueExpr = make(map[string]*dynamodb.AttributeValue)
 	}
 
 	sub := fmt.Sprintf(":v%d", len(s.valueExpr))
-	av, err := marshal(value, special)
+	av, err := marshal(value)
 	if err != nil {
 		return "", err
 	}
