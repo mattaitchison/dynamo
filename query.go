@@ -167,8 +167,18 @@ func (q *Query) Order(order Order) *Query {
 // One executes this query and retrieves a single result,
 // unmarshaling the result to out.
 func (q *Query) One(out interface{}) error {
+	item, err := q.OneItem()
+	if err != nil {
+		return err
+	}
+
+	return unmarshalItem(item, out)
+}
+
+// OneItem executes this query returning an AttributeValue
+func (q *Query) OneItem() (map[string]*dynamodb.AttributeValue, error) {
 	if q.err != nil {
-		return q.err
+		return nil, q.err
 	}
 
 	// Can we use the GetItem API?
@@ -187,11 +197,7 @@ func (q *Query) One(out interface{}) error {
 			}
 			return nil
 		})
-		if err != nil {
-			return err
-		}
-
-		return unmarshalItem(res.Item, out)
+		return res.Item, err
 	}
 
 	// If not, try a Query.
@@ -216,11 +222,8 @@ func (q *Query) One(out interface{}) error {
 
 		return nil
 	})
-	if err != nil {
-		return err
-	}
 
-	return unmarshalItem(res.Items[0], out)
+	return res.Items[0], err
 }
 
 // Count executes this request, returning the number of results.
