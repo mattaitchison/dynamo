@@ -72,6 +72,19 @@ var encodingTests = []struct {
 			{N: aws.String("3")},
 		}},
 	},
+	{
+		name: "attributeValue",
+		in: &dynamodb.AttributeValue{L: []*dynamodb.AttributeValue{
+			{N: aws.String("1")},
+			{N: aws.String("2")},
+			{N: aws.String("3")},
+		}},
+		out: &dynamodb.AttributeValue{L: []*dynamodb.AttributeValue{
+			{N: aws.String("1")},
+			{N: aws.String("2")},
+			{N: aws.String("3")},
+		}},
+	},
 }
 
 var itemEncodingTests = []struct {
@@ -206,6 +219,19 @@ var itemEncodingTests = []struct {
 			M: map[string]interface{}{
 				"Hello": "world",
 			},
+		},
+		out: map[string]*dynamodb.AttributeValue{
+			"M": &dynamodb.AttributeValue{M: map[string]*dynamodb.AttributeValue{
+				"Hello": &dynamodb.AttributeValue{S: aws.String("world")},
+			}},
+		},
+	},
+	{
+		name: "map string attributevalue",
+		in: map[string]*dynamodb.AttributeValue{
+			"M": &dynamodb.AttributeValue{M: map[string]*dynamodb.AttributeValue{
+				"Hello": &dynamodb.AttributeValue{S: aws.String("world")},
+			}},
 		},
 		out: map[string]*dynamodb.AttributeValue{
 			"M": &dynamodb.AttributeValue{M: map[string]*dynamodb.AttributeValue{

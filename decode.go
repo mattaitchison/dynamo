@@ -30,6 +30,10 @@ type unmarshalFunc func(map[string]*dynamodb.AttributeValue, interface{}) error
 
 // unmarshals a struct
 func unmarshalItem(item map[string]*dynamodb.AttributeValue, out interface{}) error {
+	if out, ok := out.(*map[string]*dynamodb.AttributeValue); ok {
+		*out = item
+		return nil
+	}
 	return dynamodbattribute.UnmarshalMap(item, out)
 }
 
